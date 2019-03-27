@@ -1,7 +1,7 @@
 export default class SwapiService {
     _apiBase = 'https://swapi.co/api'
-  
-      async getResource(url) {
+    _imageBase = 'https://starwars-visualguide.com/assets/img';
+      getResource = async(url) => {
         const res = await fetch(`${this._apiBase}${url}`)
         if(!res.ok){
           throw new Error(`Could not fetch ${url}` + `,received ${res.status}`)
@@ -9,29 +9,31 @@ export default class SwapiService {
         return await res.json()
     }
   
-    async getAllPeople() {
+    getAllPeople = async() =>  {
       const res = await this.getResource(`/people/`)
       return res.results.map(this._transforPerson)
     }
-    async getPerson(id) {
+
+    getPerson = async(id) => {
       const person = await this.getResource(`/people/${id}`)
       return this._transforPerson(person)
     }
 
-    async getAllPlanets() {
+    getAllPlanets = async() => {
       const res = await this.getResource(`/planets/`)
       return res.results.map(this._transforPlanet)
     }
-    async getPlanet(id) {
+    
+    getPlanet = async(id) => {
       const planet = await this.getResource(`/planets/${id}`)
       return this._transforPlanet(planet)
     }
 
-    async getAllStarships() {
+    getAllStarships = async() =>{
       const res = await this.getResource(`/starships/`)
       return res.results.map(this._transforStarship)
     }
-    async getStarship(id) {
+    getStarship = async(id) => {
       const starship = await this.getResource(`/starships/${id}`)
       return this._transforStarship(starship)
     }
@@ -40,7 +42,18 @@ export default class SwapiService {
       const IdRegExp = /\/([0-9]*)\/$/;
       return item.url.match(IdRegExp)[1]
     }
- 
+
+    getPersonImage = ({id}) => {
+      return `${this._imageBase}/characters/${id}.jpg`
+    };
+  
+    getStarshipImage = ({id}) => {
+      return `${this._imageBase}/starships/${id}.jpg`
+    };
+
+    getPlanetImage = ({id}) => {
+      return `${this._imageBase}/planets/${id}.jpg`
+    };
     _transforPlanet = (planet)=>{
       return {
         id : this._extractId(planet),
@@ -70,16 +83,9 @@ export default class SwapiService {
         id : this._extractId(person),
         name: person.name,
         gender:person.gender,
-        birthYear:person.birthYear,
-        eyeColor:person.eyeColor
+        birthYear:person.birth_year,
+        eyeColor:person.eye_color
       }
     }
   }
   
-  const swapi = new SwapiService()
-  
-  swapi.getPerson(3).then((p) => {
-    // people.forEach(p => {
-      console.log(p.name)
-    // });
-  })
