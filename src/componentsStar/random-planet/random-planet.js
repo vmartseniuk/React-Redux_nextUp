@@ -3,10 +3,27 @@ import SwapiService from '../../services/swapi-service'
 import Spiner from '../spiner/spiner'
 import ErrorIndicator from '../error-indicator'
 import './random-planet.css';
-
+import PropTypes from 'prop-types'
 export default class RandomPlanet extends Component {
 
     SwapiService = new SwapiService()
+
+    static defaultProps = {
+        updateInterval:10000
+    }  /// use this metod i can say default value
+
+    // static propTypes = {
+    //     updateInterval: PropTypes.number
+    // }
+    // static propTypes ={
+    //     updateInterval: (props, propName, componentName) => {
+    //         const value = props[propName]
+    //         if ( typeof value === 'number' && !isNaN(value)){
+    //             return null
+    //         }
+    //         return new TypeError(`${componentName}: ${propName} must be a number`)
+    //     }
+    // } not use npm check prop-type
 
     state = {
         planet: {},
@@ -15,7 +32,7 @@ export default class RandomPlanet extends Component {
     }
     
     componentDidMount() {
-        this.interval = setInterval(this.updatePlanet, 5000)
+        this.interval = setInterval(this.updatePlanet, this.props.updateInterval)
     }
 
     componentWillMount() {
@@ -61,14 +78,15 @@ export default class RandomPlanet extends Component {
 
     );
   }
+
+  
 }
 
 const PlanetView = ({planet}) => {
     const {id, name, population, rotationPeriod, diameter} = planet
     return(
         <React.Fragment>
-            <img className="planet-image"
-                 src={`https://starwars-visualguide.com/assets/img/planets/${id}.jpg`} />
+            <img className="planet-image" alt='img' src={`https://starwars-visualguide.com/assets/img/planets/${id}.jpg`} />
                 <div>
                     <h4>{name}</h4>
                     <ul className="list-group list-group-flush">
